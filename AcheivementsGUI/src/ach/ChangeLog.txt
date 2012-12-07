@@ -1,0 +1,74 @@
+Change Log: 12-06-2012 by JF
+Files Changed:
+    GUIFrame.java - messed with the look of the progress bars.  Added calls to
+                    the UIManager to change the colors of the progress bar.
+                    The "nimbus" look & feel (LAF) didn't like the manual overrides
+                    so I also changed the default LAF to "metal"
+
+Change Log: 12-05-2012 by JF
+Files Changed:
+    GameComparator.java - added a method to return an arraylist of games with achievements all completed.
+
+    GUIFrame.java - added javadoc to almost everything.
+                    moved the global progress bar up to the top right of the screen.
+                    added a game specific progress bar when you click on a game.
+                    added an itemlistener to the filtering checkboxes
+                        -if you check "All achievements completed", it'll actually filter it, but when 
+                        you uncheck it, the GameComparator was crashing when I was trying to use it to resort them.  Its a start at least
+
+Change Log: 12-01-2012 by JF
+Files Changed:
+    GameButton.java - removed some unused data types and changed the constructor to only
+                        receive a Game parameter. I had it taking in a User before for some reason.
+
+    GamePanel.java - added this class to encapsulate the creation of game panels that go in
+                        the scroll pane of the "My Games" screen. Contains a title, GameButton, and ProgressBar.
+                        Still working on the overall look and feel of it.  I'd like it to be a little slicker.
+   
+    GUIFrame.java - added a MouseListener to the "backArrow" and "refresh" JLabel to switch cursor to hand.
+                        Fixed scroll speed of the scroll pane.
+
+    freshGUI.java - added a indeterminate loading bar and moved the scraping of profiles to a different thread.
+
+Change Log: 11-29-2012 by MB
+Files Changed:
+    Achievement.java - added timeStamp fields, and various get/set/convert methods. javadoc
+                        for all elements created.
+
+    AchHandler.java - added the code necessary to scrape the timestamp and insert it
+                        into the achievement object. no javadoc needed. Fixed the fact that Valve has
+                        the achievement open/closed backwards. The path files were backwards, they have been
+                        switched to reflect the correct open/closed standard.
+
+    GameButton.java - changed the constructor to work with a local data file instead of a URL.
+                        -At some point for both games and achievements we need a default 
+                        image not found file for images that fail to download properly.
+    
+    Game.java - Added get method for gamePath variable and javadoc for it.
+
+    GUIFrame.java - Changed the method generateGames to use the file path on the HDD instead of the URL.
+                        Also took out the MalformedURL Exception from generateGames and generateAchievements.
+                        Made the Profile Image Load From Disk.
+    
+    WebTask.java - Added javadoc. -X For The Second Time.
+
+    DataPath.java - Added javadoc. -X For The Second Time.
+
+    UserFile.java - Added javadoc. -X For The Second Time. Fixed Get Profile Image method,
+                        Was returning just the filename, now it returns the path.
+
+    GameComparator.java - Added javadoc. -X For The Second Time. Made into one merge sort Method that
+                        takes a constant parameter. javadoc complete. Added Alphabetical Sort.
+
+    Game.java - Finished Javadoc. -X For The Second Time.
+
+    User.java - Finished Javadoc. Removed fileExists() method. Added getAvatarPath Method
+                        and javadoc.
+
+    ach Package Java Documentation Up To Date. Removed ImageRenderer.java
+    ach.parser Package Java Documentation Up To Date.
+    ach.user Package Java Documentation Up To Date.
+
+    ach.gui Package Java Documentation incomplete.
+    ach.components Package Java Documentation incomplete.
+    

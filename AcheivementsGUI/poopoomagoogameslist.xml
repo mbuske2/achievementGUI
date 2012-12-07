@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gamesList>
+	<steamID64>76561197993821248</steamID64>
+	<steamID><![CDATA[PooPooMagoo{FYP}{OTP}]]></steamID>
+	<games>
+		<game>
+			<appID>72850</appID>
+			<name><![CDATA[The Elder Scrolls V: Skyrim]]></name>
+			<logo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/72850/c5af3cde13610fca25cd17634a96d72487d21e74.jpg]]></logo>
+			<storeLink><![CDATA[http://steamcommunity.com/app/72850]]></storeLink>
+			<hoursLast2Weeks>7.5</hoursLast2Weeks>
+			<hoursOnRecord>178.7</hoursOnRecord>
+			<statsLink><![CDATA[http://steamcommunity.com/id/Poopoomagoo/stats/TheElderScrollsVSkyrim]]></statsLink>
+			<globalStatsLink><![CDATA[http://steamcommunity.com/stats/TheElderScrollsVSkyrim/achievements/]]></globalStatsLink>
+		</game>
+		<game>
+			<appID>620</appID>
+			<name><![CDATA[Portal 2]]></name>
+			<logo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/620/d2a1119ddc202fab81d9b87048f495cbd6377502.jpg]]></logo>
+			<storeLink><![CDATA[http://steamcommunity.com/app/620]]></storeLink>
+			<hoursLast2Weeks>2.4</hoursLast2Weeks>
+			<hoursOnRecord>43.1</hoursOnRecord>
+			<statsLink><![CDATA[http://steamcommunity.com/id/Poopoomagoo/stats/Portal2]]></statsLink>
+			<globalStatsLink><![CDATA[http://steamcommunity.com/stats/Portal2/achievements/]]></globalStatsLink>
+		</game>
+		<game>
+			<appID>8980</appID>
+			<name><![CDATA[Borderlands]]></name>
+			<logo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/8980/88ec298ff1ff0d748df39e084892aed6e919b146.jpg]]></logo>
+			<storeLink><![CDATA[http://steamcommunity.com/app/8980]]></storeLink>
+			<hoursOnRecord>51.2</hoursOnRecord>
+			<statsLink><![CDATA[http://steamcommunity.com/id/Poopoomagoo/stats/Borderlands]]></statsLink>
+			<globalStatsLink><![CDATA[http://steamcommunity.com/stats/Borderlands/achievements/]]></globalStatsLink>
+		</game>
+		<game>
+			<appID>9980</appID>
+			<name><![CDATA[The UnderGarden]]></name>
+			<logo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/9980/044eac25bfa6018d16447f59e6e9dca30cef3491.jpg]]></logo>
+			<storeLink><![CDATA[http://steamcommunity.com/app/9980]]></storeLink>
+			<hoursOnRecord>0.8</hoursOnRecord>
+		</game>
+	</games>
+</gamesList>

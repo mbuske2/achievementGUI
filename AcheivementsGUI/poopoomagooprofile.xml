@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<profile>
+	<steamID64>76561197993821248</steamID64>
+	<steamID><![CDATA[PooPooMagoo{FYP}{OTP}]]></steamID>
+	<onlineState>online</onlineState>
+	<stateMessage><![CDATA[Online]]></stateMessage>
+	<privacyState>public</privacyState>
+	<visibilityState>3</visibilityState>
+	<avatarIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/09/09143e7406a5c9c206a29cea7c7d70a5fc737b1b.jpg]]></avatarIcon>
+	<avatarMedium><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/09/09143e7406a5c9c206a29cea7c7d70a5fc737b1b_medium.jpg]]></avatarMedium>
+	<avatarFull><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/09/09143e7406a5c9c206a29cea7c7d70a5fc737b1b_full.jpg]]></avatarFull>
+	<vacBanned>0</vacBanned>
+	<tradeBanState>None</tradeBanState>
+	<isLimitedAccount>0</isLimitedAccount>
+	<customURL><![CDATA[Poopoomagoo]]></customURL>
+	<memberSince>October 28, 2007</memberSince>
+	<steamRating>6.2</steamRating>
+	<hoursPlayed2Wk>19.9</hoursPlayed2Wk>
+	<headline><![CDATA[]]></headline>
+	<location><![CDATA[]]></location>
+	<realname><![CDATA[PooPooMagoo]]></realname>
+	<summary><![CDATA[No information given.]]></summary>
+ 	<mostPlayedGames>
+		<mostPlayedGame>
+			<gameName><![CDATA[Spore: Galactic Adventures]]></gameName>
+			<gameLink><![CDATA[http://steamcommunity.com/app/24720]]></gameLink>
+			<gameIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/24720/fb853a0ee1b27e6b9d0aa3b5a7d24d2bf3b0aae3.jpg]]></gameIcon>
+			<gameLogo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/24720/0431fd1920415c71a735b0b213f63a38b8a2e0f2.jpg]]></gameLogo>
+			<gameLogoSmall><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/24720/0431fd1920415c71a735b0b213f63a38b8a2e0f2_thumb.jpg]]></gameLogoSmall>
+			<hoursPlayed>8.1</hoursPlayed>
+			<hoursOnRecord>8.2</hoursOnRecord>
+		</mostPlayedGame>
+		<mostPlayedGame>
+			<gameName><![CDATA[The Elder Scrolls V: Skyrim]]></gameName>
+			<gameLink><![CDATA[http://steamcommunity.com/app/72850]]></gameLink>
+			<gameIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/72850/b9aca8a189abd8d6aaf09047dbb0f57582683e1c.jpg]]></gameIcon>
+			<gameLogo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/72850/c5af3cde13610fca25cd17634a96d72487d21e74.jpg]]></gameLogo>
+			<gameLogoSmall><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/72850/c5af3cde13610fca25cd17634a96d72487d21e74_thumb.jpg]]></gameLogoSmall>
+			<hoursPlayed>7.5</hoursPlayed>
+			<hoursOnRecord>178.7</hoursOnRecord>
+			<statsName><![CDATA[TheElderScrollsVSkyrim]]></statsName>
+		</mostPlayedGame>
+		<mostPlayedGame>
+			<gameName><![CDATA[Portal 2]]></gameName>
+			<gameLink><![CDATA[http://steamcommunity.com/app/620]]></gameLink>
+			<gameIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/620/2e478fc6874d06ae5baf0d147f6f21203291aa02.jpg]]></gameIcon>
+			<gameLogo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/620/d2a1119ddc202fab81d9b87048f495cbd6377502.jpg]]></gameLogo>
+			<gameLogoSmall><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/620/d2a1119ddc202fab81d9b87048f495cbd6377502_thumb.jpg]]></gameLogoSmall>
+			<hoursPlayed>2.4</hoursPlayed>
+			<hoursOnRecord>43.1</hoursOnRecord>
+			<statsName><![CDATA[Portal2]]></statsName>
+		</mostPlayedGame>
+		<mostPlayedGame>
+			<gameName><![CDATA[Crysis]]></gameName>
+			<gameLink><![CDATA[http://steamcommunity.com/app/17300]]></gameLink>
+			<gameIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/17300/94bdcfce65cc63a92dcc76977f2b59750f67e3b2.jpg]]></gameIcon>
+			<gameLogo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/17300/c87630a45764856250306e33f7e0c0195dc2f4af.jpg]]></gameLogo>
+			<gameLogoSmall><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/17300/20e7dd38c0deeac2271bc5c1f194cb5fea2af008.jpg]]></gameLogoSmall>
+			<hoursPlayed>1.6</hoursPlayed>
+			<hoursOnRecord>1.6</hoursOnRecord>
+		</mostPlayedGame>
+		<mostPlayedGame>
+			<gameName><![CDATA[Creation Kit]]></gameName>
+			<gameLink><![CDATA[http://steamcommunity.com/app/202480]]></gameLink>
+			<gameIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/202480/2166876d9cc68a81d121464ffed7d2b208e5e813.jpg]]></gameIcon>
+			<gameLogo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/202480/eff4e2c2ddd3d09d650162ab7cef7b44e76455f7.jpg]]></gameLogo>
+			<gameLogoSmall><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/202480/eff4e2c2ddd3d09d650162ab7cef7b44e76455f7_thumb.jpg]]></gameLogoSmall>
+			<hoursPlayed>0.2</hoursPlayed>
+			<hoursOnRecord>0.2</hoursOnRecord>
+		</mostPlayedGame>
+	</mostPlayedGames>
+
+
+
+	<groups>
+		<group isPrimary="1">
+			<groupID64>103582791431929142</groupID64>
+			<groupName><![CDATA[PooPooMagoo Designs]]></groupName>
+			<groupURL><![CDATA[poopoomagoodesigns]]></groupURL>
+			<headline><![CDATA[Custom Content By PooPooMagoo!]]></headline>
+			<summary><![CDATA[Official Steam Group for PooPooMagoo Designs. <br />
+<br />
+This is one of the places to get up-to-date announcements from me about my projects.<br />
+<br />
+I love Valve, and want to grow all of their games with quality custom content! Join me wont you?]]></summary>
+			<avatarIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/39/390655e9c41e65341c1aeffc2eb27d6d794cd43a.jpg]]></avatarIcon>
+			<avatarMedium><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/39/390655e9c41e65341c1aeffc2eb27d6d794cd43a_medium.jpg]]></avatarMedium>
+			<avatarFull><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/39/390655e9c41e65341c1aeffc2eb27d6d794cd43a_full.jpg]]></avatarFull>
+			<memberCount>8</memberCount>
+			<membersInChat>0</membersInChat>
+			<membersInGame>0</membersInGame>
+			<membersOnline>0</membersOnline>
+		</group>
+		<group isPrimary="0">
+			<groupID64>103582791429535324</groupID64>
+			<groupName><![CDATA[Black Mesa]]></groupName>
+			<groupURL><![CDATA[BlackMesa]]></groupURL>
+			<headline><![CDATA[]]></headline>
+			<summary><![CDATA[No information given.]]></summary>
+			<avatarIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/e1/e1b1ccfd4136fca795a2bba4c1ae3db5ead29a11.jpg]]></avatarIcon>
+			<avatarMedium><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/e1/e1b1ccfd4136fca795a2bba4c1ae3db5ead29a11_medium.jpg]]></avatarMedium>
+			<avatarFull><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/e1/e1b1ccfd4136fca795a2bba4c1ae3db5ead29a11_full.jpg]]></avatarFull>
+			<memberCount>26096</memberCount>
+			<membersInChat>11</membersInChat>
+			<membersInGame>957</membersInGame>
+			<membersOnline>5339</membersOnline>
+		</group>
+		<group isPrimary="0">
+			<groupID64>103582791430207749</groupID64>
+			<groupName><![CDATA[Source Underground]]></groupName>
+			<groupURL><![CDATA[sourceunderground]]></groupURL>
+			<headline><![CDATA[This is the Official SourceUnderground Group!]]></headline>
+			<summary><![CDATA[This community started in the United States, but has members from all over the world including Canada, the EU and Australia. It's a free and open community welcoming everyone who maintains a cool, calm and respectful attitude. We're here to have fun while meeting new people. See you inside!<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+Clan Symbol in an example:<br />
+((su)) yourname © <br />
+If you are part of the Source Underground you are allowed to wear these symbols. <br />
+Any symbols that do not match this exactly are most likely fake and the people wearing them will burn in hell. <br />
+<br />
+Some of our favorite games:<br />
+------------------  Team Fortress II<br />
+------------------  Counter-Strike: Source<br />
+------------------  Left 4 Dead 1 and 2<br />
+------------------  Gary's Mod<br />
+------------------  Guild Wars<br />
+<br />
+SU OFFICIAL GROUPS - Groups created by the SU owner Trekkr:<br />
+------------------  ((suG)) - Source Underground Gmod Group &gt;&gt;&gt; (http://steamcommunity.com/groups/sugmod)<br />
+------------------  ((suM)) - Source Underground Minecraft Group &gt;&gt;&gt; (http://steamcommunity.com/groups/suminecraft)<br />
+<br />
+SU SUBSIDIARIES - Groups associated to and endorsed by the SU, but ran by a different owner. <br />
+------------------  ((suL4D)) - Source Underground Death Squad L4D Group &gt;&gt;&gt; (http://steamcommunity.com/groups/susuds)<br />
+------------------  ((suA)) - Source Underground Australia &gt;&gt;&gt; (http://steamcommunity.com/groups/sourceundergoundaus)<br />
+<br />
+IMPOSTER GROUPS - These are the groups that copied pretty much everything and are imposters. &quot;Imitation is the sincerest of flattery.&quot; said by Charles Caleb Colton.  For all those who plan on copying material from the SU know that all the artwork, logos, web sites etc. are copyrighted and it is illegal for you to do so. <br />
+The Source Underground does not endorse or support any of the groups listed below:<br />
+------------------  IMPOSTER - http://steamcommunity.com/groups/sourceundergroundguardians<br />
+------------------  IMPOSTER - http://steamcommunity.com/groups/SUnderground<br />
+------------------  IMPOSTER - http://steamcommunity.com/groups/sourceundergroundadmins<br />
+------------------  IMPOSTER - http://steamcommunity.com/groups/sourceundergrounddeathsquad<br />
+------------------  IMPOSTER - http://steamcommunity.com/groups/sourceundergrounddeltadivision<br />
+<br />
+GROUPS NO LONGER SUPPORTED BY THE SU (Dead Groups) <br />
+These groups are either no longer supported by the SU and/or they are no longer updated so are in other words dead groups:<br />
+------------------  NOT SUPPORTED - European Group - http://steamcommunity.com/groups/sueucss<br />
+------------------  DEAD - SU TF2 Team Group - http://steamcommunity.com/groups/suik<br />
+------------------  DEAD - SU Media Division - http://steamcommunity.com/groups/sumd<br />
+------------------  DEAD - SU Tactical Admin - http://steamcommunity.com/groups/suta]]></summary>
+			<avatarIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/0d/0d8fa2bb9fefcfdb7cdcbf9e6378e039372b441f.jpg]]></avatarIcon>
+			<avatarMedium><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/0d/0d8fa2bb9fefcfdb7cdcbf9e6378e039372b441f_medium.jpg]]></avatarMedium>
+			<avatarFull><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/0d/0d8fa2bb9fefcfdb7cdcbf9e6378e039372b441f_full.jpg]]></avatarFull>
+			<memberCount>55509</memberCount>
+			<membersInChat>0</membersInChat>
+			<membersInGame>1433</membersInGame>
+			<membersOnline>7371</membersOnline>
+		</group>
+				<group isPrimary="0">
+					<groupID64>103582791430075517</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430075519</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430075523</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430075525</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430075529</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430264201</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430380703</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430460027</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430485503</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430630502</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430805950</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430884334</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430960431</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791431012229</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791431062851</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791431369696</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791431429461</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791431714827</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791431935652</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791431962114</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791432188903</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791432706584</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791432727312</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791432851039</groupID64>
+				</group>
+				</groups>
+</profile>
