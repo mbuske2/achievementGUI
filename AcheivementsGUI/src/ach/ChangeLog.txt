@@ -1,3 +1,9 @@
+Change Log: 12-07-2012 by MB
+Files Changed:
+    freshGUI.java - Played around with the worker thread and added a rough dialog box for if the 
+                    program fails a scrape. Not fool-proof, more of a proof of concept.
+                    This change is on the test thread for gitHub.
+
 Change Log: 12-06-2012 by JF
 Files Changed:
     GUIFrame.java - messed with the look of the progress bars.  Added calls to

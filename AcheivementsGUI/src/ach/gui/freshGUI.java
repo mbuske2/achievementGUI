@@ -8,11 +8,15 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -27,6 +31,8 @@ import javax.swing.SwingWorker;
  */
 public class freshGUI extends javax.swing.JFrame {
 
+    
+    freshGUI ddfreshnizzle = this;
     /**
      * String args for the GameScreen form
      */
@@ -37,12 +43,12 @@ public class freshGUI extends javax.swing.JFrame {
      */
     private static String userName;
     private static User user;
-    private static final String dir = System.getProperty("user.home")
+    /*private static final String dir = System.getProperty("user.home")
             + System.getProperty("file.separator");
     private static final String saveDir = System.getProperty("user.home")
             + System.getProperty("file.separator") + ".AchievementsGUI"
             + System.getProperty("file.separator")
-            + "users";
+            + "users";*/ //Not needed, but kept for the moment.
 
     /**
      * Creates new form GXML
@@ -376,18 +382,18 @@ public class freshGUI extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 
-    private class Scrape extends SwingWorker<User, String> {
+    private class Scrape extends SwingWorker<Boolean, String> {
 
 
         public Scrape() {
             //dialog.setLocationRelativeTo(null);
+            
         }
 
         @Override
-        protected User doInBackground() throws Exception {
+        protected Boolean doInBackground() throws Exception {
 
             userName = jTextField1.getText();
-            user = new User(userName);
             DataPath.checkDir();
             UserFile userFile = new UserFile(userName);
             try {
@@ -396,12 +402,14 @@ public class freshGUI extends javax.swing.JFrame {
                     if (userFile.exists()) {
                         System.out.println("User " + userName + " Exists On Disk");
                         user = userFile.loadFile(user);
+                        return true;
                     } else {
 
                         System.out.println("User " + userName + " Does Not Exist On Disk");
                         userFile.checkUserFile();
                         user = userFile.populateUserFirstTime();
                         userFile.saveFile(user);
+                        return true;
 
                     }
                     //this.setVisible(false);
@@ -413,19 +421,35 @@ public class freshGUI extends javax.swing.JFrame {
                     //GamesScreen.main(args);
                 } else {
                     System.out.println("Steam ID Retrieval Failed, please check internet connection.");
+                    JOptionPane.showMessageDialog(rootPane, "Steam ID Retrieval Failed, please check internet connection.", "Scrape Error", JOptionPane.ERROR_MESSAGE);
+                    return false;
                 }
             } catch (Exception e) {
                 System.out.println("Could not Create user, the Steam Servers Could be down.");
+                JOptionPane.showMessageDialog(rootPane, "Could not Create user, the Steam Servers Could be down.", "Scrape Error", JOptionPane.ERROR_MESSAGE);
+                return false;
             }
-            return user;
+
         }
 
         @Override
         protected void done() {
-            GUIFrame.main(args);
-            frameref.setVisible(false);
-
-            System.out.println("done");
+            try {
+                if (this.get()){
+                    GUIFrame.main(args);
+                    frameref.setVisible(false);
+                    System.out.println("done");
+                } else {
+                    ddfreshnizzle.setVisible(false);
+                    String[] args = null;
+                    freshGUI.main(args);
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(freshGUI.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ExecutionException ex) {
+                Logger.getLogger(freshGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
     }
 }
