@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -25,18 +26,22 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractButton;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
+import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.plaf.nimbus.AbstractRegionPainter;
 
 /**
@@ -52,6 +57,16 @@ public class GUIFrame extends JFrame {
     protected static HashMap<String, Game> games;
     private User user;
     private JFrame frameref = this;
+    private int gamesSize;
+    private Boolean filter;
+    private JRadioButton a_alphabetical;
+    private JRadioButton a_date;
+    private JRadioButton a_default;
+    private JCheckBox a_complete;
+    private JRadioButton g_ascending;
+    private JRadioButton g_descending;
+    private JRadioButton g_percentage;
+    private JCheckBox g_complete;
 
     /**
      * Sets the state of the screen for functions which need to know if the
@@ -98,12 +113,15 @@ public class GUIFrame extends JFrame {
      */
     public GUIFrame() throws MalformedURLException {
         super("STEAM ACHIEVEMENTS");
-        UIManager.put("ProgressBar.background", new Color(100, 100, 100));
-        UIManager.put("ProgressBar.foreground", new Color(50, 50, 50));
-        UIManager.put("ProgressBar.selectionBackground", Color.black);
+        UIManager.put("ProgressBar.background", new Color(50, 50, 50));
+        UIManager.put("ProgressBar.foreground", new Color(30, 30, 30));
+        UIManager.put("ProgressBar.selectionBackground", Color.white);
         UIManager.put("ProgressBar.selectionForeground", Color.white);
+
         setUser(freshGUI.getUser());
+        gamesSize = getUser().getGames().size();
         initComponents();
+        changeUser.setFont(new Font("Tahoma", Font.PLAIN, 11));
         //Set Avatar
         ImageIcon iI = new ImageIcon(getUser().getAvatarPath());
         avatarLabel.setIcon(iI);
@@ -142,6 +160,7 @@ public class GUIFrame extends JFrame {
         });
         //This centers the window on the screen
         this.setLocationRelativeTo(null);
+        setResizable(false);
 
         //SwingUtilities.updateComponentTreeUI(frameref);
 //        AbstractRegionPainter myPainter = new AbstractRegionPainter() {
@@ -168,20 +187,25 @@ public class GUIFrame extends JFrame {
      */
     private void setGamesScreen() throws MalformedURLException {
         setScreenState(SS_GAMES);
+        backArrow.setVisible(false);
         oneGameProgressLabel.setVisible(false);
         oneGameProgress.setVisible(false);
-        games_stageHeadline.setText("My Games");
+        games_stageHeadline.setText("My Games (" + gamesSize + ")");
         double totalAchieved = getUser().getTotalAchieved();
         double totalAchievements = getUser().getTotalAchievements();
         double cent = (double) (totalAchieved / totalAchievements);
         int per = (int) (cent * 100);
         globalProgress.setMaximum((int) (totalAchievements));
         globalProgress.setValue((int) (totalAchieved));
-        globalProgressLabel.setText(((int) (totalAchieved)) + "/" + ((int) (totalAchievements)) + " (" + per + "%)");
+        String paint = ("Global: " + ((int) (totalAchieved)) + "/" + ((int) (totalAchievements)) + " (" + per + "%)");
+        globalProgress.setString(paint);
+
+        globalProgress.setStringPainted(true);
         games_scrollPane.setViewportView(generateGames(getUser()));
 
         backArrow.setToolTipText("Back to login screen");
         refreshArrow.setToolTipText("Refresh games list");
+
     }
 
     /**
@@ -192,6 +216,7 @@ public class GUIFrame extends JFrame {
      */
     private void setAchievementsScreen(String gameName) {
         setScreenState(SS_ACHIEVEMENTS);
+        backArrow.setVisible(true);
         games_stageHeadline.setText(gameName);
 
         HashMap<String, Game> gamesHM = getUser().getGames();
@@ -199,12 +224,16 @@ public class GUIFrame extends JFrame {
         oneGameProgress.setVisible(true);
         oneGameProgress.setMaximum(g.getTotalAchievements());
         oneGameProgress.setValue(g.getAchieved());
-        int total = g.getTotalAchievements();
-        int achieved = g.getAchieved();
-        oneGameProgressLabel.setForeground(Color.WHITE);
-        oneGameProgressLabel.setText(gameName + ": " + achieved + "/" + total);
-        oneGameProgressLabel.setVisible(true);
-        games_scrollPane.setViewportView(generateAchievements(g));
+        double total = g.getTotalAchievements();
+        double achieved = g.getAchieved();
+        double per = achieved / total;
+        int percent = (int) per;
+        oneGameProgress.setStringPainted(true);
+        oneGameProgress.setString((int) achieved + "/" + (int) total + " (" + percent + "%)");
+        //oneGameProgressLabel.setVisible(true);
+        JPanel p = generateAchievements(g);
+        System.out.println(p.getPreferredSize());
+        games_scrollPane.setViewportView(p);
         backArrow.setToolTipText("Back to your games.");
         refreshArrow.setToolTipText("Refresh achievements for " + gameName);
     }
@@ -220,19 +249,20 @@ public class GUIFrame extends JFrame {
 
         containerPanel = new javax.swing.JPanel();
         topPanel = new javax.swing.JPanel();
-        backArrow = new javax.swing.JLabel();
         avatarContainer = new javax.swing.JPanel();
         avatarLabel = new javax.swing.JLabel();
-        refreshArrow = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         globalProgress = new javax.swing.JProgressBar();
         globalProgressLabel = new javax.swing.JLabel();
+        changeUser = new javax.swing.JLabel();
         centerStagePanel = new javax.swing.JPanel();
         games_stageHeadline = new javax.swing.JLabel();
         sep = new javax.swing.JSeparator();
         games_scrollPane = new javax.swing.JScrollPane();
         oneGameProgress = new javax.swing.JProgressBar();
         oneGameProgressLabel = new javax.swing.JLabel();
+        refreshArrow = new javax.swing.JLabel();
+        backArrow = new javax.swing.JLabel();
         filteringPane = new javax.swing.JScrollPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -242,13 +272,6 @@ public class GUIFrame extends JFrame {
         containerPanel.setBackground(new java.awt.Color(0, 0, 0));
 
         topPanel.setBackground(new java.awt.Color(0, 0, 0));
-
-        backArrow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ach/gui/back_icon.png"))); // NOI18N
-        backArrow.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                backArrowMouseClicked(evt);
-            }
-        });
 
         avatarContainer.setBackground(new java.awt.Color(30, 30, 30));
 
@@ -272,8 +295,6 @@ public class GUIFrame extends JFrame {
                 .addContainerGap())
         );
 
-        refreshArrow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ach/gui/refresh_icon.png"))); // NOI18N
-
         jLabel2.setBackground(new java.awt.Color(0, 0, 0));
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -282,6 +303,21 @@ public class GUIFrame extends JFrame {
         globalProgressLabel.setForeground(new java.awt.Color(255, 255, 255));
         globalProgressLabel.setText(" ");
 
+        changeUser.setBackground(new java.awt.Color(0, 0, 0));
+        changeUser.setForeground(new java.awt.Color(150, 150, 150));
+        changeUser.setText("change user");
+        changeUser.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                changeUserMouseClick(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                changeUserOnHover(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                changeUserOnExit(evt);
+            }
+        });
+
         javax.swing.GroupLayout topPanelLayout = new javax.swing.GroupLayout(topPanel);
         topPanel.setLayout(topPanelLayout);
         topPanelLayout.setHorizontalGroup(
@@ -289,40 +325,37 @@ public class GUIFrame extends JFrame {
             .addGroup(topPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(avatarContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(topPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(backArrow)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 664, Short.MAX_VALUE)
+                        .addComponent(globalProgressLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(refreshArrow))
+                        .addComponent(globalProgress, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
                     .addGroup(topPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(globalProgress, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(globalProgressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                            .addComponent(changeUser)
+                            .addComponent(jLabel2))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         topPanelLayout.setVerticalGroup(
             topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(topPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(avatarContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(avatarContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(topPanelLayout.createSequentialGroup()
+                            .addGap(20, 20, 20)
+                            .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(globalProgress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(globalProgressLabel))
+                            .addContainerGap()))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topPanelLayout.createSequentialGroup()
-                        .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(topPanelLayout.createSequentialGroup()
-                                .addComponent(refreshArrow)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(globalProgressLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(globalProgress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(topPanelLayout.createSequentialGroup()
-                                .addComponent(backArrow)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel2)))
-                        .addContainerGap())))
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(changeUser))))
         );
 
         centerStagePanel.setBackground(new java.awt.Color(0, 0, 0));
@@ -332,16 +365,24 @@ public class GUIFrame extends JFrame {
         games_stageHeadline.setText("My Games");
 
         games_scrollPane.setBorder(null);
+        games_scrollPane.setMaximumSize(new java.awt.Dimension(52767, 52767));
         games_scrollPane.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
                 speedUpMouseWheel(evt);
             }
         });
 
-        oneGameProgress.setToolTipText("null");
-
         oneGameProgressLabel.setForeground(new java.awt.Color(250, 250, 250));
         oneGameProgressLabel.setText("jLabel1");
+
+        refreshArrow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ach/gui/refresh_icon.png"))); // NOI18N
+
+        backArrow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ach/gui/back_icon.png"))); // NOI18N
+        backArrow.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                backArrowMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout centerStagePanelLayout = new javax.swing.GroupLayout(centerStagePanel);
         centerStagePanel.setLayout(centerStagePanelLayout);
@@ -352,30 +393,35 @@ public class GUIFrame extends JFrame {
                     .addComponent(sep)
                     .addGroup(centerStagePanelLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(games_scrollPane))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, centerStagePanelLayout.createSequentialGroup()
+                        .addComponent(games_scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(centerStagePanelLayout.createSequentialGroup()
                         .addContainerGap()
+                        .addComponent(backArrow)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(games_stageHeadline)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 417, Short.MAX_VALUE)
-                        .addGroup(centerStagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(oneGameProgress, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(oneGameProgressLabel))
-                        .addGap(61, 61, 61)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 355, Short.MAX_VALUE)
+                        .addComponent(oneGameProgressLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(oneGameProgress, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43)
+                        .addComponent(refreshArrow)))
                 .addContainerGap())
         );
         centerStagePanelLayout.setVerticalGroup(
             centerStagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(centerStagePanelLayout.createSequentialGroup()
-                .addGroup(centerStagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(games_stageHeadline)
-                    .addGroup(centerStagePanelLayout.createSequentialGroup()
-                        .addComponent(oneGameProgressLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(oneGameProgress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(centerStagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(centerStagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(centerStagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(games_stageHeadline)
+                            .addComponent(oneGameProgressLabel))
+                        .addComponent(backArrow))
+                    .addComponent(oneGameProgress, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(refreshArrow, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sep, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(games_scrollPane)
+                .addComponent(games_scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -400,8 +446,8 @@ public class GUIFrame extends JFrame {
                 .addGroup(containerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(centerStagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(containerPanelLayout.createSequentialGroup()
-                        .addComponent(filteringPane, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 194, Short.MAX_VALUE))))
+                        .addComponent(filteringPane)
+                        .addContainerGap())))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -441,6 +487,23 @@ public class GUIFrame extends JFrame {
 
     private void speedUpMouseWheel(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_speedUpMouseWheel
     }//GEN-LAST:event_speedUpMouseWheel
+
+    private void changeUserMouseClick(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_changeUserMouseClick
+        this.setVisible(false);
+        String[] args = null;
+        freshGUI.main(args);
+    }//GEN-LAST:event_changeUserMouseClick
+
+    private void changeUserOnHover(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_changeUserOnHover
+        JLabel tempCU = (JLabel) evt.getSource();
+        tempCU.setFont(new Font("Tahoma", Font.BOLD, 11));
+        tempCU.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_changeUserOnHover
+
+    private void changeUserOnExit(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_changeUserOnExit
+        JLabel tempCU = (JLabel) evt.getSource();
+        tempCU.setFont(new Font("Tahoma", Font.PLAIN, 11));
+    }//GEN-LAST:event_changeUserOnExit
 
     /**
      * @param args the command line arguments
@@ -491,6 +554,7 @@ public class GUIFrame extends JFrame {
     private javax.swing.JLabel avatarLabel;
     private javax.swing.JLabel backArrow;
     private javax.swing.JPanel centerStagePanel;
+    private javax.swing.JLabel changeUser;
     private javax.swing.JPanel containerPanel;
     private javax.swing.JScrollPane filteringPane;
     private javax.swing.JScrollPane games_scrollPane;
@@ -565,7 +629,10 @@ public class GUIFrame extends JFrame {
             gamesPanel.add(gp);
             numGames++;
             int temp = numGames / 3;
-            panelHeight = temp * 212;
+            panelHeight = temp * 155;
+            if (numGames % 3 > 0) {
+                panelHeight += 155;
+            }
 
         }
 
@@ -627,7 +694,11 @@ public class GUIFrame extends JFrame {
             gamesPanel.add(gp);
             numGames++;
             int temp = numGames / 3;
-            panelHeight = temp * 212;
+
+            panelHeight = temp * 155;
+            if (numGames % 3 > 0) {
+                panelHeight += 155;
+            }
 
         }
 
@@ -703,7 +774,7 @@ public class GUIFrame extends JFrame {
             o[2] = a.getDescription().toString();
             //System.out.println(o[0] + " " + o[1] + " " + o[2] + " " + o[3]);
             try {
-                ap = new AchievementPanel(o[1], o[2], o[0]);
+                ap = new AchievementPanel(o[1], o[2], o[0], o[3]);
                 achievementPanelContainer.add(ap);
             } catch (IOException e) {
                 System.out.println("IOException, achievement panel could not be created!");
@@ -716,6 +787,9 @@ public class GUIFrame extends JFrame {
         achievementPanelContainer.setBackground(Color.BLACK);
         achievementPanelContainer.setPreferredSize(new Dimension(710, apHeight));
 
+        Dimension pref = achievementPanelContainer.getPreferredSize();
+        achievementPanelContainer.setMaximumSize(pref);
+        achievementPanelContainer.setMinimumSize(pref);
 
         switchFiltering(generateAchievementsFilter());
         return achievementPanelContainer;
@@ -729,6 +803,9 @@ public class GUIFrame extends JFrame {
      */
     private JPanel generateGamesFilter() {
         JPanel panel = new JPanel();
+
+        GamesFilterListener gfl = new GamesFilterListener();
+
         panel.setBackground(Color.BLACK);
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -739,9 +816,18 @@ public class GUIFrame extends JFrame {
         filterHeadline.setFont(fontH1);
 
         Font fontH2 = new Font("Tahoma", Font.PLAIN, 16);
+//        Font fontH2B = new Font("Tahoma", Font.BOLD, 16);
         JLabel filterHeadline2 = new JLabel("Sort Games By:");
         filterHeadline2.setForeground(Color.white);
         filterHeadline2.setFont(fontH2);
+
+//        JLabel filterHeadlineHours = new JLabel("Hours played");
+//        filterHeadline2.setForeground(Color.white);
+//        filterHeadline2.setFont(fontH2B);
+//        
+//        JLabel filterHeadlinePercentage = new JLabel("Percentage complete");
+//        filterHeadline2.setForeground(Color.white);
+//        filterHeadline2.setFont(fontH2B);
 
         Font normal = new Font("Tahoma", Font.PLAIN, 14);
 
@@ -750,63 +836,150 @@ public class GUIFrame extends JFrame {
 
         search.setText("Search Games");
         search.setForeground(new Color(150, 150, 150));
+
+        ButtonGroup gameSortingOptions = new ButtonGroup();
+
+        g_ascending = new JRadioButton();
+        g_descending = new JRadioButton();
+        g_percentage = new JRadioButton();
+        g_complete = new JCheckBox();
+        gameSortingOptions.add(g_ascending);
+        gameSortingOptions.add(g_descending);
+        gameSortingOptions.add(g_percentage);
+
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(search);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(filterHeadline);
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(g_complete);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(filterHeadline2);
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-        JCheckBox ascending;
-        JCheckBox descending;
-        JCheckBox complete;
 
-        ascending = new JCheckBox();
-        descending = new JCheckBox();
-        complete = new JCheckBox();
 
-        ascending.setText("Ascending");
-        ascending.setFont(normal);
+        g_ascending.setText("Ascending");
+        g_ascending.setFont(normal);
+        g_ascending.addActionListener(gfl);
 
-        descending.setText("Descending");
-        descending.setFont(normal);
+        g_descending.setText("Descending");
+        g_descending.setFont(normal);
+        g_descending.setSelected(true);
+        g_descending.addActionListener(gfl);
 
-        complete.setText("All achievements complete");
-        complete.setFont(normal);
-        complete.setActionCommand("g_complete");
-        complete.addItemListener(new CheckBoxListener());
+        g_percentage.setText("Percentage complete");
+        g_percentage.setFont(normal);
+        g_percentage.addActionListener(gfl);
 
-        ascending.setForeground(new Color(240, 240, 240));
-        descending.setForeground(new Color(240, 240, 240));
-        complete.setForeground(new Color(240, 240, 240));
-        ascending.setBackground(new Color(0, 0, 0));
-        descending.setBackground(new Color(0, 0, 0));
-        complete.setBackground(new Color(0, 0, 0));
+        g_complete.setText("Games 100% complete");
+        g_complete.setFont(normal);
+        g_complete.setActionCommand("g_complete");
+        g_complete.addActionListener(gfl);
 
-        panel.add(ascending);
-        panel.add(descending);
-        panel.add(complete);
+        g_ascending.setForeground(new Color(240, 240, 240));
+        g_descending.setForeground(new Color(240, 240, 240));
+
+        g_ascending.setBackground(new Color(0, 0, 0));
+        g_descending.setBackground(new Color(0, 0, 0));
+
+        g_percentage.setForeground(new Color(240, 240, 240));
+        g_percentage.setBackground(new Color(0, 0, 0));
+
+        g_complete.setForeground(new Color(240, 240, 240));
+        g_complete.setBackground(new Color(0, 0, 0));
+
+
+        panel.add(g_ascending);
+        panel.add(g_descending);
+        panel.add(g_percentage);
 
         return panel;
     }
 
-    private class CheckBoxListener implements ItemListener {
+    /**
+     * Handles the events that take place in the games filtering panel.
+     */
+    private class GamesFilterListener implements ActionListener {
 
         @Override
-        public void itemStateChanged(ItemEvent e) {
-            JCheckBox x = (JCheckBox) e.getSource();
-            String aC = x.getActionCommand();
-            if (aC.equalsIgnoreCase("g_complete")) {
-                if (x.isSelected()) {
-                    System.out.println("Show only games who have all achievements completed.");
-                    switchScrollPane(generateFilteredGames(GameComparator.filterCompletedAchievements(games)));
+        public void actionPerformed(ActionEvent e) {
+
+            Boolean filterComplete = g_complete.isSelected();
+            Boolean sortAscending = g_ascending.isSelected();
+            Boolean sortDescending = g_descending.isSelected();
+
+
+            if (filterComplete) {
+                g_percentage.setEnabled(false);
+            } else {
+                g_percentage.setEnabled(true);
+            }
+
+
+            if (filterComplete) {
+                if (sortAscending) {
+                    System.out.println("Show only games with 100% completed achievements, sorted by hours played (ascending)");
+
+//                    switchScrollPane(generateFilteredGames(GameComparator.filterCompletedAchievements(games)));
+                } else if (sortDescending) {
+                    System.out.println("Show only games with 100% completed achievements, sorted by hours played (descending)");
                 } else {
-                    System.out.println("This is where it'd go back to the full list.");
-
-
+                    System.out.println("Show only games with 100% completed achievements, sorted by percentage complete (this doesn't make sense but we'll have to do something for this case.");
+                }
+            } else {
+                if (sortAscending) {
+                    System.out.println("Show all games, sorted by hours played (ascending)");
+                } else if (sortDescending) {
+                    System.out.println("Show all games, sorted by hours played (descending)");
+                } else {
+                    System.out.println("Show all games, sorted by percentage complete (descending)");
                 }
             }
+
+        }
+    }
+
+    /**
+     * Handles the events that take place in the achievements filtering panel.
+     */
+    private class AchievementsFilterListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            AbstractButton x = (AbstractButton) e.getSource();
+            String aC = x.getActionCommand();
+            Boolean filterComplete = a_complete.isSelected();
+            Boolean sortDate = a_date.isSelected();
+            Boolean sortAlphabetical = a_alphabetical.isSelected();
+
+            if (filterComplete) {
+                a_default.setEnabled(false);
+            } else {
+                a_default.setEnabled(true);
+            }
+
+            if (filterComplete) {
+
+                if (sortDate) {
+                    System.out.println("Show only completed achievements, sorted by date");
+
+//                    switchScrollPane(generateFilteredGames(GameComparator.filterCompletedAchievements(games)));
+                } else if (sortAlphabetical) {
+                    System.out.println("Show only completed achievements, sorted alphabetically");
+                } else {
+                    System.out.println("Show all completed achievements, sorted by default (this doesn't make sense but we'll have to do something for this case.");
+                }
+            } else {
+                if (sortDate) {
+                    System.out.println("Show all achievements, sorted by date");
+                } else if (sortAlphabetical) {
+                    System.out.println("Show all achievements, sorted alphabetically");
+                } else {
+                    System.out.println("Show all achievements, sorted by \"default\"");
+                }
+            }
+
         }
     }
 
@@ -818,6 +991,9 @@ public class GUIFrame extends JFrame {
      */
     private JPanel generateAchievementsFilter() {
         JPanel panel = new JPanel();
+
+        AchievementsFilterListener afl = new AchievementsFilterListener();
+
         panel.setBackground(Color.BLACK);
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -828,46 +1004,95 @@ public class GUIFrame extends JFrame {
         filterHeadline.setFont(fontH1);
 
         Font fontH2 = new Font("Tahoma", Font.PLAIN, 16);
-        JLabel filterHeadline2 = new JLabel("Sort Achievements By:");
+//        Font fontH2B = new Font("Tahoma", Font.BOLD, 16);
+        JLabel filterHeadline2 = new JLabel("Sort Games By:");
         filterHeadline2.setForeground(Color.white);
         filterHeadline2.setFont(fontH2);
+
+//        JLabel filterHeadlineHours = new JLabel("Hours played");
+//        filterHeadline2.setForeground(Color.white);
+//        filterHeadline2.setFont(fontH2B);
+//        
+//        JLabel filterHeadlinePercentage = new JLabel("Percentage complete");
+//        filterHeadline2.setForeground(Color.white);
+//        filterHeadline2.setFont(fontH2B);
 
         Font normal = new Font("Tahoma", Font.PLAIN, 14);
 
         JTextField search = new JTextField();
         search.setMaximumSize(new Dimension(250, 28));
 
-        search.setText("Search Games");
+        search.setText("Search Achievements");
         search.setForeground(new Color(150, 150, 150));
+
+        ButtonGroup achSortingOptions = new ButtonGroup();
+
+
+
+        a_alphabetical = new JRadioButton();
+        a_date = new JRadioButton();
+        a_default = new JRadioButton();
+        a_default.setSelected(true);
+
+        //      percentage = new JRadioButton();
+        a_complete = new JCheckBox();
+        achSortingOptions.add(a_alphabetical);
+        achSortingOptions.add(a_date);
+        achSortingOptions.add(a_default);
+
+
+
+        //    achSortingOptions.add(percentage);
+
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(search);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(filterHeadline);
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(a_complete);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(filterHeadline2);
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-        JCheckBox ascending;
-        JCheckBox descending;
-        JCheckBox recent;
+        a_alphabetical.setText("Alphabetical");
+        a_alphabetical.setFont(normal);
+        a_alphabetical.addActionListener(afl);
 
-        ascending = new JCheckBox();
-        descending = new JCheckBox();
-        recent = new JCheckBox();
 
-        ascending.setText("Achieved");
-        ascending.setFont(normal);
-        descending.setText("Not achieved");
-        descending.setFont(normal);
-        recent.setText("Recently achieved");
-        recent.setFont(normal);
-        ascending.setForeground(new Color(240, 240, 240));
-        descending.setForeground(new Color(240, 240, 240));
-        recent.setForeground(new Color(240, 240, 240));
+        a_date.setText("Date achieved");
+        a_date.setFont(normal);
+        a_date.addActionListener(afl);
 
-        panel.add(ascending);
-        panel.add(descending);
-        panel.add(recent);
+        a_default.setText("Default");
+        a_default.setFont(normal);
+        a_default.setToolTipText("The default way Valve sorts them");
+        a_default.addActionListener(afl);
+//        percentage.setText("Almost complete");
+//        percentage.setFont(normal);
+
+        a_complete.setText("Achieved");
+        a_complete.setFont(normal);
+        a_complete.addActionListener(afl);
+
+        a_alphabetical.setForeground(new Color(240, 240, 240));
+        a_date.setForeground(new Color(240, 240, 240));
+        a_default.setForeground(new Color(240, 240, 240));
+
+        a_alphabetical.setBackground(new Color(0, 0, 0));
+        a_date.setBackground(new Color(0, 0, 0));
+        a_default.setBackground(new Color(0, 0, 0));
+
+//        percentage.setForeground(new Color(240, 240, 240));
+//        percentage.setBackground(new Color(0, 0, 0));
+//   
+        a_complete.setForeground(new Color(240, 240, 240));
+        a_complete.setBackground(new Color(0, 0, 0));
+
+        panel.add(a_alphabetical);
+        panel.add(a_date);
+        panel.add(a_default);
+//        panel.add(percentage);
+
         return panel;
     }
 }

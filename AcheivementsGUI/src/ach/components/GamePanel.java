@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 /**
  *
  * @author Josaf
@@ -26,9 +27,8 @@ public class GamePanel extends JPanel {
     public GamePanel(Game g) {
         //achieved.setPreferredSize(new Dimension(200,10));
         //achieved.setMinimumSize(new Dimension(200,10));
-        
-        
-        this.setBackground(new Color(30,30,30));
+        setBorder(new LineBorder(new Color(60,60,60),1));
+        this.setBackground(new Color(10,10,10));
         setPreferredSize(new Dimension(230,150));
         this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
         title.setText(g.getName());

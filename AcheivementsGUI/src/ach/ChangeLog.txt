@@ -1,8 +1,19 @@
-Change Log: 12-07-2012 by MB
+Change Log: 12-09-2012 by JF
 Files Changed:
-    freshGUI.java - Played around with the worker thread and added a rough dialog box for if the 
-                    program fails a scrape. Not fool-proof, more of a proof of concept.
-                    This change is on the test thread for gitHub.
+    AchievementPanel.java - added a 1 pixel red or green border around the achievement icons to indicate whether they're unlocked
+                            or not.  I think someone in the class mentioned something about having a red/green indicator.  We can
+                            remove it though if you don't think its necessary.  I think it adds a nice additional visual cue to 
+                            prevent confusion.  To do this, I had to change the constructor to take in whether the achievement was
+                            unlocked or not.
+
+    GamePanel.java - changed some of the colors slightly and added a light border around the GamePanel.  Also changed the progress
+                        bar's colors slightly to make it a little more readable.
+
+    GUIFrame.java - made it so you can't resize the window because I can't figure out a good way to make the panel height be correct
+                    if the user maximizes the window.  Locking the window is a temporary solution for the presentation, but I'll    
+                    definitely look into that in the future.
+                    - added a change user button under the user name.
+                    - added game count
 
 Change Log: 12-06-2012 by JF
 Files Changed:
