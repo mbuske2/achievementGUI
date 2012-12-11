@@ -2,7 +2,11 @@ package ach.gui;
 
 import ach.DataPath;
 import ach.UserFile;
+import ach.parser.EggHandler;
+import ach.parser.GameHandler;
+import ach.parser.ProfHandler;
 import ach.user.User;
+import ach.user.UserBuild;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -16,6 +20,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 /*
  * @author Josaf
@@ -278,17 +284,17 @@ public class freshGUI extends javax.swing.JFrame {
         JLabel loadingMSG;
         JLabel loadingMSG1;
 
-        progressBar.setPreferredSize(new Dimension(400,20));
+        progressBar.setPreferredSize(new Dimension(400, 20));
         progressBar.setIndeterminate(true);
         loadingMSG = new JLabel();
         loadingMSG.setForeground(Color.WHITE);
-                loadingMSG1 = new JLabel();
+        loadingMSG1 = new JLabel();
         loadingMSG1.setForeground(Color.WHITE);
         loadingMSG.setText("Please wait while we gather your Steam account information.");
         loadingMSG1.setText("This make take a few minutes.");
         loadingPanel.add(loadingMSG);
         loadingPanel.add(loadingMSG1);
-        loadingPanel.add(Box.createRigidArea(new Dimension(0,10)));
+        loadingPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         loadingPanel.add(progressBar);
         jScrollPane1.setViewportView(loadingPanel);
         //DataPath.saveImage();
@@ -298,7 +304,7 @@ public class freshGUI extends javax.swing.JFrame {
         jTextField1.setEnabled(false);
         jButton1.setEnabled(false);
         frameref.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        
+
         Scrape scraper = new Scrape();
         scraper.execute();
 
@@ -375,7 +381,6 @@ public class freshGUI extends javax.swing.JFrame {
 
     private class Scrape extends SwingWorker<User, String> {
 
-
         public Scrape() {
             //dialog.setLocationRelativeTo(null);
         }
@@ -387,29 +392,62 @@ public class freshGUI extends javax.swing.JFrame {
             user = new User(userName);
             DataPath.checkDir();
             UserFile userFile = new UserFile(userName);
+            int retries = 0;
+            /*
+             * EASTER EGG CODE
+             */
+            if (userName.equalsIgnoreCase("Enter the ID in your Steam custom URL")
+                    || userName.equalsIgnoreCase("Alex") || userName.equalsIgnoreCase("")) {
+                UserBuild user2 = new UserBuild(userFile);
+
+                user = user2.egg();
+                return user;
+            }
+            /*
+             * EASTER EGG CODE
+             */
             try {
-                if (userFile.findID()) {
-                    userFile.checkUserDirectory();
-                    if (userFile.exists()) {
-                        System.out.println("User " + userName + " Exists On Disk");
-                        user = userFile.loadFile(user);
+                while (retries < 10) {
+                    if (userFile.findID()) {
+                        retries = 10;
+                        userFile.checkUserDirectory();
+                        if (userFile.exists()) {
+                            System.out.println("User " + userName + " Exists On Disk");
+                            user = userFile.loadFile(user);
+                        } else {
+
+                            System.out.println("User " + userName + " Does Not Exist On Disk");
+                            userFile.checkUserFile();
+                            user = userFile.populateUserFirstTime();
+                            userFile.saveFile(user);
+
+                        }
+                        //this.setVisible(false);
+                        //LoadingScreen2 ls = new LoadingScreen2(user);
+                        //ls.setVisible(true);
+
+                        //12-1 commented out this line GUIFrame.main(args);
+                        //GamesScreen.setAvatarIcon(user.getAvatarURL());
+                        //GamesScreen.main(args);
                     } else {
 
-                        System.out.println("User " + userName + " Does Not Exist On Disk");
-                        userFile.checkUserFile();
-                        user = userFile.populateUserFirstTime();
-                        userFile.saveFile(user);
+                        retries++;
+                        if (retries == 10) {
+                            /*
+                             * EASTER EGG CODE
+                             */
+                            UserBuild user2 = new UserBuild(userFile);
+
+                            user = user2.egg();
+                            /*
+                             * EASTER EGG CODE
+                             */
+                            System.out.println("Steam ID Retrieval Failed after 5 retries, please check internet connection.");
+                        } else {
+                            System.out.println("Steam ID Retrieval Failed retry " + retries + ", Trying again...");
+                        }
 
                     }
-                    //this.setVisible(false);
-                    //LoadingScreen2 ls = new LoadingScreen2(user);
-                    //ls.setVisible(true);
-
-                    //12-1 commented out this line GUIFrame.main(args);
-                    //GamesScreen.setAvatarIcon(user.getAvatarURL());
-                    //GamesScreen.main(args);
-                } else {
-                    System.out.println("Steam ID Retrieval Failed, please check internet connection.");
                 }
             } catch (Exception e) {
                 System.out.println("Could not Create user, the Steam Servers Could be down.");

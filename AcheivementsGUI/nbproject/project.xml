@@ -14,9 +14,12 @@
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
             <word>ach</word>
             <word>AchHandler</word>
+            <word>AchievementComparator</word>
             <word>args</word>
             <word>DataPath</word>
             <word>fileExists</word>
+            <word>findID</word>
+            <word>freshGUI</word>
             <word>Game's</word>
             <word>GameButton</word>
             <word>GameComparator</word>
@@ -24,6 +27,7 @@
             <word>generateAchievements</word>
             <word>generateGames</word>
             <word>getAvatarPath</word>
+            <word>GNAComparator</word>
             <word>gui</word>
             <word>GUIFrame</word>
             <word>hashmap</word>

@@ -1,3 +1,26 @@
+Change Log: 12-11-2012 by MB
+Files Changed:
+    GUIFrame.java - Added more sorting options. Changed listeners to do things, added Filter methods to load sorted games panel. Added sorting achievements options.
+
+    GameComparator.java - Added Percent comparator and updated sort method to utilize the two ways to sort. Javadoc'd it all.
+                          Added Filter Method and Constants For Filters. JDoc'd it all. Merged with AchievementComparator. Added
+                          More sort methods and filter methods for achievements.
+    
+    GNAComparator.java - used to be GameComparator.java. JavaDoc Is Incomplete.
+
+    freshGUI.java - Added 10 retries for findID(); NO MORE IMAGE FETCH ERRORS HOPEFULLY!!! - Added easter egg alex page.
+                    Fetch errors might be due to an older load file in a newer system.
+
+    AchievementComparator.java - Removed and merged with GameComparator.
+
+    Game.java - Increased the retries to 25 for Achievement scraping.
+
+    EggHandler.java - Part Of The Fun Of The Egg
+
+    User.java - Added Easter Egg Code
+    
+    ProfHandler.java - Added Easter Egg Code
+
 Change Log: 12-09-2012 by JF
 Files Changed:
     AchievementPanel.java - added a 1 pixel red or green border around the achievement icons to indicate whether they're unlocked

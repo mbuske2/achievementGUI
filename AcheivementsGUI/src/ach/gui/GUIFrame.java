@@ -1,6 +1,6 @@
 package ach.gui;
 
-import ach.GameComparator;
+import ach.GNAComparator;
 import ach.components.AchievementPanel;
 import ach.components.GameButton;
 import ach.components.GamePanel;
@@ -55,6 +55,9 @@ public class GUIFrame extends JFrame {
     private final String SS_ACHIEVEMENTS = "achievements";
     private String screenState;
     protected static HashMap<String, Game> games;
+    private static ArrayList<String> fSList;
+    private static ArrayList<Achievement> achList;
+    private static Game currentGame;
     private User user;
     private JFrame frameref = this;
     private int gamesSize;
@@ -62,10 +65,14 @@ public class GUIFrame extends JFrame {
     private JRadioButton a_alphabetical;
     private JRadioButton a_date;
     private JRadioButton a_default;
-    private JCheckBox a_complete;
+    private JRadioButton a_all;
+    private JRadioButton a_complete;
+    private JRadioButton a_incomplete;
     private JRadioButton g_ascending;
     private JRadioButton g_descending;
     private JRadioButton g_percentage;
+    private JRadioButton g_alphabetical;
+    private JRadioButton g_percentageDec;
     private JCheckBox g_complete;
 
     /**
@@ -128,6 +135,7 @@ public class GUIFrame extends JFrame {
         //avatarLabel.setIcon(new ImageIcon(getUser().getAvatarURL()));
 
         setGamesScreen();
+        g_descending.setSelected(true);
         games_scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         games_scrollPane.setBackground(Color.BLACK);
         backArrow.addMouseListener(new MouseAdapter() {
@@ -226,7 +234,7 @@ public class GUIFrame extends JFrame {
         oneGameProgress.setValue(g.getAchieved());
         double total = g.getTotalAchievements();
         double achieved = g.getAchieved();
-        double per = achieved / total;
+        double per = (((double) achieved / (double) total) * 100);
         int percent = (int) per;
         oneGameProgress.setStringPainted(true);
         oneGameProgress.setString((int) achieved + "/" + (int) total + " (" + percent + "%)");
@@ -569,6 +577,53 @@ public class GUIFrame extends JFrame {
     private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables
 
+    private JPanel filterGames(String type) {
+        if (!fSList.isEmpty()) {
+            fSList = GNAComparator.sortHoursPlayed(fSList, games, type);
+            JPanel gamesPanel = new JPanel();
+            GameButton b;
+            Game g;
+            int numGames = 0;
+            int panelHeight = 0;
+            for (int i = 0; i < fSList.size(); i++) {
+                g = games.get(fSList.get(i));
+                GamePanel gp = new GamePanel(g);
+                GameButton tempButton = gp.getButton();
+                tempButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String gameName = e.getActionCommand();
+                        setAchievementsScreen(gameName);
+                    }
+                });
+                gamesPanel.add(gp);
+                numGames++;
+                int temp = numGames / 3;
+                panelHeight = temp * 155;
+                if (numGames % 3 > 0) {
+                    panelHeight += 155;
+                }
+
+            }
+
+            gamesPanel.setPreferredSize(new Dimension(710, panelHeight));
+            gamesPanel.setBackground(Color.BLACK);
+            System.out.println("Found " + numGames + " games.");
+
+            //switchFiltering(generateGamesFilter());
+            return gamesPanel;
+
+        } else {
+
+            JPanel emptyPanel = new JPanel();
+            emptyPanel.setBackground(Color.black);
+            JLabel msg = new JLabel("No games match your criteria");
+            msg.setForeground(Color.white);
+            emptyPanel.add(msg);
+            return emptyPanel;
+        }
+    }
+
     /**
      * Generates a JPanel populated with games (Usually to be inserted into
      * games_scrollPane)
@@ -581,9 +636,9 @@ public class GUIFrame extends JFrame {
         JPanel gamesPanel = new JPanel();
 
         games = u.getGames();
-        ArrayList<String> sortedKeys;
-        sortedKeys = GameComparator.sortHoursPlayed(u.getGameKeys(), games, GameComparator.HPHTL);
-        //sortedKeys = GameComparator.sortHoursPlayed(u.getGameKeys(), games, GameComparator.ALPHA);
+        ArrayList<String> keys = u.getGameKeys();
+        fSList = GNAComparator.sortHoursPlayed(keys, games, GNAComparator.GSHPHTL);
+        //sortedKeys = GNAComparator.sortHoursPlayed(u.getGameKeys(), games, GNAComparator.ALPHA);
 
         int numGames = 0;
 
@@ -591,8 +646,8 @@ public class GUIFrame extends JFrame {
         Game g;
 
         int panelHeight = 0;
-        for (int i = 0; i < sortedKeys.size(); i++) {
-            g = games.get(sortedKeys.get(i));
+        for (int i = 0; i < fSList.size(); i++) {
+            g = games.get(fSList.get(i));
 
             GamePanel gp = new GamePanel(g);
 
@@ -620,7 +675,7 @@ public class GUIFrame extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     String gameName = e.getActionCommand();
-
+                    currentGame = games.get(gameName); //MB
                     setAchievementsScreen(gameName);
 
 
@@ -647,8 +702,8 @@ public class GUIFrame extends JFrame {
 
     /**
      *
-     * @param g An ArrayList of games sorted by GameComparator, to be made into
-     * a panel that will be inside games_scrollPane
+     * @param g An ArrayList of games sorted by GNAComparator, to be made into a
+     * panel that will be inside games_scrollPane
      * @return The JPanel populated with the sorted games.
      */
     public JPanel generateFilteredGames(ArrayList<Game> g) {
@@ -685,7 +740,7 @@ public class GUIFrame extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     String gameName = e.getActionCommand();
-
+                    currentGame = games.get(gameName); //MB
                     setAchievementsScreen(gameName);
 
 
@@ -731,6 +786,71 @@ public class GUIFrame extends JFrame {
         filteringPane.setViewportView(jp);
     }
 
+    public JPanel filterAchievements(Game g, String parameter) {
+        JPanel achievementPanelContainer = new JPanel();
+        achievementPanelContainer.setLayout(new FlowLayout());
+
+        //Get the game that was clicked
+        //  System.out.println(gameName);
+
+        System.out.println("So far so good:" + g);
+        ArrayList<Achievement> achievements;
+        if (parameter.equalsIgnoreCase(GNAComparator.ASFDEFAL)) {
+            achievements = achList;
+        } else {
+            achievements = achList;
+            if (parameter.equalsIgnoreCase(GNAComparator.GASALPHA)) {
+                achList = GNAComparator.sortAch(achievements, parameter);
+                achievements = achList;
+            } else if (parameter.equalsIgnoreCase(GNAComparator.ASDAREA)) {
+                achList = GNAComparator.sortAch(achievements, parameter);
+                achievements = achList;
+            }
+
+        }
+
+        String[] o = new String[4];
+        Iterator it2 = achievements.iterator();
+        AchievementPanel ap;
+
+        int achCount = 0;
+        while (it2.hasNext()) {
+            Achievement a = (Achievement) it2.next();
+            achCount++;
+            if (a.getUnlockedStatus()) {
+                //o[0] = a.getIconClosedURLPath();
+                o[0] = a.getIconOpenPath();
+                o[3] = "Yes";
+            } else {
+                //o[0] = a.getIconOpenURLPath();
+                o[0] = a.getIconClosedPath();
+                o[3] = "No";
+            }
+            o[1] = a.getName().toString();
+            o[2] = a.getDescription().toString();
+            //System.out.println(o[0] + " " + o[1] + " " + o[2] + " " + o[3]);
+            try {
+                ap = new AchievementPanel(o[1], o[2], o[0], o[3]);
+                achievementPanelContainer.add(ap);
+            } catch (IOException e) {
+                System.out.println("IOException, achievement panel could not be created!");
+            }
+
+
+        }
+
+        int apHeight = achCount * 85;
+        achievementPanelContainer.setBackground(Color.BLACK);
+        achievementPanelContainer.setPreferredSize(new Dimension(710, apHeight));
+
+        Dimension pref = achievementPanelContainer.getPreferredSize();
+        achievementPanelContainer.setMaximumSize(pref);
+        achievementPanelContainer.setMinimumSize(pref);
+
+        //switchFiltering(generateAchievementsFilter());
+        return achievementPanelContainer;
+    }
+
     /**
      * Generates a JPanel filled with achievement panels to place into center
      * stage.
@@ -752,7 +872,9 @@ public class GUIFrame extends JFrame {
 
         System.out.println("So far so good:" + g);
 
+
         ArrayList<Achievement> achievements = g.getAchievements();
+        achList = achievements;
         String[] o = new String[4];
         Iterator it2 = achievements.iterator();
         AchievementPanel ap;
@@ -836,16 +958,30 @@ public class GUIFrame extends JFrame {
 
         search.setText("Search Games");
         search.setForeground(new Color(150, 150, 150));
+        search.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String gameName = e.getActionCommand();
+                    currentGame = games.get(gameName); //MB
+                    setAchievementsScreen(gameName);
+
+
+                }
+            });
 
         ButtonGroup gameSortingOptions = new ButtonGroup();
 
         g_ascending = new JRadioButton();
         g_descending = new JRadioButton();
         g_percentage = new JRadioButton();
+        g_alphabetical = new JRadioButton();
         g_complete = new JCheckBox();
+        g_percentageDec = new JRadioButton();
         gameSortingOptions.add(g_ascending);
         gameSortingOptions.add(g_descending);
         gameSortingOptions.add(g_percentage);
+        gameSortingOptions.add(g_alphabetical);
+        gameSortingOptions.add(g_percentageDec);
 
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(search);
@@ -859,18 +995,26 @@ public class GUIFrame extends JFrame {
 
 
 
-        g_ascending.setText("Ascending");
+        g_ascending.setText("Ascending (Hours Played)");
         g_ascending.setFont(normal);
         g_ascending.addActionListener(gfl);
 
-        g_descending.setText("Descending");
+        g_descending.setText("Descending (Hours Played)");
         g_descending.setFont(normal);
-        g_descending.setSelected(true);
+//        g_descending.setSelected(true);
         g_descending.addActionListener(gfl);
 
-        g_percentage.setText("Percentage complete");
+        g_percentage.setText("Ascending (% Complete)");
         g_percentage.setFont(normal);
         g_percentage.addActionListener(gfl);
+
+        g_percentageDec.setText("Descending (% Complete)");
+        g_percentageDec.setFont(normal);
+        g_percentageDec.addActionListener(gfl);
+
+        g_alphabetical.setText("Alphabetical");
+        g_alphabetical.setFont(normal);
+        g_alphabetical.addActionListener(gfl);
 
         g_complete.setText("Games 100% complete");
         g_complete.setFont(normal);
@@ -886,13 +1030,21 @@ public class GUIFrame extends JFrame {
         g_percentage.setForeground(new Color(240, 240, 240));
         g_percentage.setBackground(new Color(0, 0, 0));
 
+        g_percentageDec.setForeground(new Color(240, 240, 240));
+        g_percentageDec.setBackground(new Color(0, 0, 0));
+
+        g_alphabetical.setForeground(new Color(240, 240, 240));
+        g_alphabetical.setBackground(new Color(0, 0, 0));
+
         g_complete.setForeground(new Color(240, 240, 240));
         g_complete.setBackground(new Color(0, 0, 0));
 
-
-        panel.add(g_ascending);
         panel.add(g_descending);
+        panel.add(g_ascending);
+        panel.add(g_percentageDec);
         panel.add(g_percentage);
+        panel.add(g_alphabetical);
+
 
         return panel;
     }
@@ -908,34 +1060,49 @@ public class GUIFrame extends JFrame {
             Boolean filterComplete = g_complete.isSelected();
             Boolean sortAscending = g_ascending.isSelected();
             Boolean sortDescending = g_descending.isSelected();
+            boolean sortAlphabetical = g_alphabetical.isSelected();
+            boolean sortPercentageDec = g_percentageDec.isSelected();
 
 
             if (filterComplete) {
                 g_percentage.setEnabled(false);
+                g_percentageDec.setEnabled(false);
+                fSList = GNAComparator.filterGames(games, GNAComparator.GFOHPAF);
             } else {
                 g_percentage.setEnabled(true);
+                g_percentageDec.setEnabled(true);
+                fSList = GNAComparator.filterGames(games, GNAComparator.GFNULVA);
             }
 
 
-            if (filterComplete) {
-                if (sortAscending) {
-                    System.out.println("Show only games with 100% completed achievements, sorted by hours played (ascending)");
-
-//                    switchScrollPane(generateFilteredGames(GameComparator.filterCompletedAchievements(games)));
-                } else if (sortDescending) {
-                    System.out.println("Show only games with 100% completed achievements, sorted by hours played (descending)");
-                } else {
-                    System.out.println("Show only games with 100% completed achievements, sorted by percentage complete (this doesn't make sense but we'll have to do something for this case.");
-                }
+            //  if (filterComplete) {
+            //    if (sortAscending) {
+            //        System.out.println("Show only games with 100% completed achievements, sorted by hours played (ascending)");
+            //         
+//                    switchScrollPane(generateFilteredGames(GNAComparator.filterCompletedAchievements(games)));
+            //   } else if (sortDescending) {
+            //       System.out.println("Show only games with 100% completed achievements, sorted by hours played (descending)");
+            //   } else {
+            //       System.out.println("Show only games with 100% completed achievements, sorted by percentage complete (this doesn't make sense but we'll have to do something for this case.");
+            //   }
+            // } else {
+            if (sortAscending) {
+                System.out.println("Show all games, sorted by hours played (ascending)");
+                switchScrollPane(filterGames(GNAComparator.GSHPLTH));
+            } else if (sortDescending) {
+                System.out.println("Show all games, sorted by hours played (descending)");
+                switchScrollPane(filterGames(GNAComparator.GSHPHTL));
+            } else if (sortAlphabetical) {
+                System.out.println("Show all games, sorted Alphabetically");
+                switchScrollPane(filterGames(GNAComparator.GASALPHA));
+            } else if (sortPercentageDec) {
+                System.out.println("Show all games, sorted by percentage complete (descending)");
+                switchScrollPane(filterGames(GNAComparator.GSDCENT));
             } else {
-                if (sortAscending) {
-                    System.out.println("Show all games, sorted by hours played (ascending)");
-                } else if (sortDescending) {
-                    System.out.println("Show all games, sorted by hours played (descending)");
-                } else {
-                    System.out.println("Show all games, sorted by percentage complete (descending)");
-                }
+                System.out.println("Show all games, sorted by percentage complete (acsending)");
+                switchScrollPane(filterGames(GNAComparator.GSPCENT));
             }
+            // }
 
         }
     }
@@ -949,35 +1116,53 @@ public class GUIFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             AbstractButton x = (AbstractButton) e.getSource();
             String aC = x.getActionCommand();
-            Boolean filterComplete = a_complete.isSelected();
-            Boolean sortDate = a_date.isSelected();
-            Boolean sortAlphabetical = a_alphabetical.isSelected();
+            boolean filterComplete = a_complete.isSelected();
+            boolean filterIncomplete = a_incomplete.isSelected();
+            boolean filterAll = a_all.isSelected();
+            boolean sortDate = a_date.isSelected();
+            boolean sortAlphabetical = a_alphabetical.isSelected();
+            boolean isDefault = a_default.isSelected();
 
-            if (filterComplete) {
-                a_default.setEnabled(false);
-            } else {
-                a_default.setEnabled(true);
-            }
+            //  if (!filterAll) {
+            //      a_default.setEnabled(false);
+            // } else {
+            //    a_default.setEnabled(true);
+            //}
+            //This part is horribly inefficient, Later there needs to be a check to see if it is already sorted the way
+            //it appears so filter or sort arent called each time. and are only called when it changes.
 
-            if (filterComplete) {
 
-                if (sortDate) {
-                    System.out.println("Show only completed achievements, sorted by date");
-
-//                    switchScrollPane(generateFilteredGames(GameComparator.filterCompletedAchievements(games)));
-                } else if (sortAlphabetical) {
-                    System.out.println("Show only completed achievements, sorted alphabetically");
-                } else {
-                    System.out.println("Show all completed achievements, sorted by default (this doesn't make sense but we'll have to do something for this case.");
+            if (sortDate) {
+                System.out.println("Show ALL achievements, sorted by date");
+                if (filterComplete) {
+                    achList = GNAComparator.filterAchievements(currentGame.getAchievements(), GNAComparator.AFACHUL);
+                } else if (filterIncomplete) {
+                    achList = GNAComparator.filterAchievements(currentGame.getAchievements(), GNAComparator.AFACHLK);
+                } else if (filterAll){
+                    achList = currentGame.getAchievements();
                 }
-            } else {
-                if (sortDate) {
-                    System.out.println("Show all achievements, sorted by date");
-                } else if (sortAlphabetical) {
-                    System.out.println("Show all achievements, sorted alphabetically");
-                } else {
-                    System.out.println("Show all achievements, sorted by \"default\"");
+                games_scrollPane.setViewportView(filterAchievements(currentGame, GNAComparator.ASDAREA));
+                //ArrayList<Achievement> ach = 
+            } else if (sortAlphabetical) {
+                System.out.println("Show ALL achievements, sorted alphabetically");
+                if (filterComplete) {
+                    achList = GNAComparator.filterAchievements(currentGame.getAchievements(), GNAComparator.AFACHUL);
+                } else if (filterIncomplete) {
+                    achList = GNAComparator.filterAchievements(currentGame.getAchievements(), GNAComparator.AFACHLK);
+                } else if (filterAll){
+                    achList = currentGame.getAchievements();
                 }
+                games_scrollPane.setViewportView(filterAchievements(currentGame, GNAComparator.GASALPHA));
+            } else if (isDefault) {
+                System.out.println("Show ALL achievements, sorted by \"default\"");
+                if (filterComplete) {
+                    achList = GNAComparator.getDefaults(currentGame.getAchievements(), false);
+                } else if (filterIncomplete) {
+                    achList = GNAComparator.getDefaults(currentGame.getAchievements(), true);
+                } else if (filterAll){
+                    achList = currentGame.getAchievements();
+                }
+                games_scrollPane.setViewportView(filterAchievements(currentGame, GNAComparator.ASFDEFAL));
             }
 
         }
@@ -1005,7 +1190,7 @@ public class GUIFrame extends JFrame {
 
         Font fontH2 = new Font("Tahoma", Font.PLAIN, 16);
 //        Font fontH2B = new Font("Tahoma", Font.BOLD, 16);
-        JLabel filterHeadline2 = new JLabel("Sort Games By:");
+        JLabel filterHeadline2 = new JLabel("Sort Achievements By:");
         filterHeadline2.setForeground(Color.white);
         filterHeadline2.setFont(fontH2);
 
@@ -1025,6 +1210,7 @@ public class GUIFrame extends JFrame {
         search.setText("Search Achievements");
         search.setForeground(new Color(150, 150, 150));
 
+        ButtonGroup achFilteringOptions = new ButtonGroup();
         ButtonGroup achSortingOptions = new ButtonGroup();
 
 
@@ -1034,8 +1220,15 @@ public class GUIFrame extends JFrame {
         a_default = new JRadioButton();
         a_default.setSelected(true);
 
+
         //      percentage = new JRadioButton();
-        a_complete = new JCheckBox();
+        a_all = new JRadioButton();
+        a_all.setSelected(true);
+        a_complete = new JRadioButton();
+        a_incomplete = new JRadioButton();
+        achFilteringOptions.add(a_complete);
+        achFilteringOptions.add(a_incomplete);
+        achFilteringOptions.add(a_all);
         achSortingOptions.add(a_alphabetical);
         achSortingOptions.add(a_date);
         achSortingOptions.add(a_default);
@@ -1049,7 +1242,9 @@ public class GUIFrame extends JFrame {
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(filterHeadline);
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(a_all);
         panel.add(a_complete);
+        panel.add(a_incomplete);
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(filterHeadline2);
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -1058,6 +1253,9 @@ public class GUIFrame extends JFrame {
         a_alphabetical.setFont(normal);
         a_alphabetical.addActionListener(afl);
 
+        a_all.setText("All achievements");
+        a_all.setFont(normal);
+        a_all.addActionListener(afl);
 
         a_date.setText("Date achieved");
         a_date.setFont(normal);
@@ -1074,6 +1272,10 @@ public class GUIFrame extends JFrame {
         a_complete.setFont(normal);
         a_complete.addActionListener(afl);
 
+        a_incomplete.setText("Not Achieved");
+        a_incomplete.setFont(normal);
+        a_incomplete.addActionListener(afl);
+
         a_alphabetical.setForeground(new Color(240, 240, 240));
         a_date.setForeground(new Color(240, 240, 240));
         a_default.setForeground(new Color(240, 240, 240));
@@ -1087,6 +1289,12 @@ public class GUIFrame extends JFrame {
 //   
         a_complete.setForeground(new Color(240, 240, 240));
         a_complete.setBackground(new Color(0, 0, 0));
+
+        a_incomplete.setForeground(new Color(240, 240, 240));
+        a_incomplete.setBackground(new Color(0, 0, 0));
+
+        a_all.setForeground(new Color(240, 240, 240));
+        a_all.setBackground(new Color(0, 0, 0));
 
         panel.add(a_alphabetical);
         panel.add(a_date);

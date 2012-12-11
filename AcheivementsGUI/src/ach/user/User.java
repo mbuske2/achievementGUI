@@ -15,8 +15,11 @@ package ach.user;
 import ach.DataPath;
 import ach.UserFile;
 import ach.WebTask;
+import ach.parser.EggHandler;
 import ach.parser.GameHandler;
+import ach.parser.ProfHandler;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -24,9 +27,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 @SuppressWarnings("serial")
 /**
@@ -220,11 +225,13 @@ public class User implements Serializable {
     public String getAvatarIcon() {
         return avatarIcon;
     }
-    
-    /**Gets the Avatar Image path on the Disk as a String.
-     *@return String The Avatar Image Path on The Disk.
+
+    /**
+     * Gets the Avatar Image path on the Disk as a String.
+     *
+     * @return String The Avatar Image Path on The Disk.
      */
-    public String getAvatarPath(){
+    public String getAvatarPath() {
         return avatarPath;
     }
 
@@ -407,7 +414,9 @@ public class User implements Serializable {
      }
      }*/
     //create user with web data
-    /**Creates the user URLs from strings and places them in the proper URL variables.*/
+    /**
+     * Creates the user URLs from strings and places them in the proper URL variables.
+     */
     public void updateUserURL() {
         try {
             avatarIconURL = new URL(avatarIcon);
@@ -419,8 +428,10 @@ public class User implements Serializable {
 
     }
 
-    /**Returns a String representation of the User Object.
-     *@return String The String representation of this Object.
+    /**
+     * Returns a String representation of the User Object.
+     *
+     * @return String The String representation of this Object.
      */
     public String toString() {
         String u;
@@ -450,5 +461,29 @@ public class User implements Serializable {
             count++;
         }
         return u;
+    }
+
+    /*
+     * EASTER EGG CODE
+     */
+    public User egg() throws ParserConfigurationException, SAXException, IOException {
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        SAXParser saxParser = factory.newSAXParser();
+        UserBuild user2 = new UserBuild(userFile);
+        ProfHandler profileHandler = new ProfHandler(user2);
+        saxParser.parse(DataPath.homeDir + DataPath.sep
+                + "egg" + DataPath.sep + "alex_profile.xml", profileHandler);
+        user2.setAvatarPath(DataPath.homeDir + DataPath.sep
+                + "egg" + DataPath.sep + "alex.png");
+        factory = SAXParserFactory.newInstance();
+        saxParser = factory.newSAXParser();
+        EggHandler gameHandler = new EggHandler(user2);
+        saxParser.parse(DataPath.homeDir + DataPath.sep
+                + "egg" + DataPath.sep + "alex_gameslist.xml", gameHandler);
+        user2.getGames().get("Teaching at SUNY").gamePath = DataPath.homeDir + DataPath.sep
+                + "egg" + DataPath.sep + "oswego.jpg";
+        user2.setGameKeys();
+        user2.setTotalsAch();
+        return user2;
     }
 }

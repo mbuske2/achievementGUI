@@ -92,9 +92,11 @@ public class ProfHandler extends DefaultHandler {
      */
     @Override
     public void endElement(String uri, String localName, String name) throws SAXException {
-        //if (name.equalsIgnoreCase("steamID64")) {
-        //    user.setSteamID64(currentValue);
-        //}
+        /*Redundant other than it is needed for the Easter Egg Remove After*/
+        if (name.equalsIgnoreCase("steamID64")) {
+            user.setSteamID64(currentValue);
+        }
+        /*Redundant other than it is needed for the Easter Egg Remove After*/
         if (name.equalsIgnoreCase("steamID")) {
             user.setSteamID(currentValue);
         }

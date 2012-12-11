@@ -120,7 +120,6 @@
                                       <Component id="globalProgress" min="-2" max="-2" attributes="0"/>
                                       <Component id="globalProgressLabel" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">

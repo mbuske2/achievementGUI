@@ -67,7 +67,7 @@ public class Game implements Serializable {
      */
     protected URL globalStatsURL;
     /**
-     * The achievements belonging to the game.
+     * The achievements belonging to the game In The Default Order.
      */
     private ArrayList<Achievement> achievements = new ArrayList<>();
     /**
@@ -325,7 +325,7 @@ public class Game implements Serializable {
                     System.out.println("Retry: " + (retries + 1));
                     return this.updateAchievements2(retries + 1);
                 }
-            } else if (retries <= 4) {
+            } else if (retries <= 25) {
                 try {
                     SAXParserFactory factory = SAXParserFactory.newInstance();
                     SAXParser saxParser = factory.newSAXParser();
@@ -340,7 +340,7 @@ public class Game implements Serializable {
                 }
             } else {
                 System.out.println("Could not update Achievements list for " + name
-                        + " after 5 attempts.");
+                        + " after 25 attempts.");
                 System.out.println();
                 return false;
             }
